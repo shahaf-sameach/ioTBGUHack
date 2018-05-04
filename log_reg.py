@@ -5,7 +5,6 @@ from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 # from nn import Network
 #from Yechiav_TEst import DataImport_and_preProdceesing, Test_Data_Train
@@ -20,7 +19,7 @@ for category in df_trn.device_category.unique():
 
     selected = tmp_df_trn.loc[tmp_df_trn['device_category'] == category]
     unk = tmp_df_trn.loc[tmp_df_trn['device_category'] != category]
-    unk = unk.iloc[:selected.shape[0], :]
+    unk = unk.sample(n=selected.shape[0])
 
     tmp_df_trn = pd.concat([unk, selected])
     #tmp_df_trn = df_trn.copy()
@@ -33,10 +32,9 @@ for category in df_trn.device_category.unique():
     categories = ['unk', category]
     y_one_hot = [categories.index(c) for c in y_trn]
 
-    X_train, X_test, y_train, y_test = train_test_split(x_trn, y_trn)
+    X_train, X_test, y_train, y_test = train_test_split(x_trn, y_one_hot)
     # X_train, tuple1 = DataImport_and_preProdceesing(X_train)
     # X_test = Test_Data_Train(X_test, tuple1)
-
 
     #pdb.set_trace()
     print("running on {}".format(category))
@@ -55,10 +53,10 @@ y_trn = df_trn.iloc[:,(df_trn.shape[1]-1)].copy() # last column
 
 X_train, X_test, y_train, y_test = train_test_split(x_trn, y_trn)
 
-rf_model = RandomForestClassifier(n_estimators=100, max_depth=4)
-rf_model.fit(x_trn,y_trn)
-print("test" ,logmodel.score(X_train, y_train))
-print("train", logmodel.score(X_test, y_test))
+rf_model = RandomForestClassifier(n_estimators=100)
+rf_model.fit(X_train,y_train)
+print("test" ,rf_model.score(X_train, y_train))
+print("train", rf_model.score(X_test, y_test))
 
 df_trn = pd.read_csv('hackathon_IoT_validation_set_based_on_01mar2017_ANONYMIZED.csv', low_memory=False, na_values='?')
 x_trn = df_trn.iloc[:,0:(df_trn.shape[1]-1)].copy() # all but the last column
@@ -70,7 +68,7 @@ for category in categories_model:
   prediction = models[category].predict_proba(x_trn)
   tmp = []
   for row in prediction:
-    if row[1] > 0.85:
+    if row[1] > 0.87:
       tmp.append(1)
     else:
       tmp.append(0)

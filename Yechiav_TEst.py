@@ -5,10 +5,10 @@ import time
 
 import numpy as np
 import pandas as pd
-from IPython.core.display import display
+# from IPython.core.display import display
 from sklearn.model_selection import train_test_split
 
-from ioTBGUHack import Preprocess
+import Preprocess
 
 skew_thershold=0.9
 kurt_thershold=0.3
@@ -30,24 +30,24 @@ def print_unique(DF):
         print(DF[col].unique()[:20])
 
 
-os.chdir(prm_dir)
+#os.chdir(prm_dir)
 
 np.random.seed(23)
 
 # training set
-df_trn = pd.read_csv(DataSet, low_memory=False, na_values='?')
+# df_trn = pd.read_csv(DataSet, low_memory=False, na_values='?')
 
 # df_vld = pd.read_csv("hackathon_IoT_ANONYMIZED.csv", low_memory=False, na_values='?')
 
 
 # (df_trn.iloc[:,-1].value_counts().plot(kind = 'bar'))
 
-y_trn = df_trn.iloc[:,(df_trn.shape[1]-1)].copy() # last column
-X_trn = df_trn.iloc[:,0:(df_trn.shape[1]-1)].copy() #
+# y_trn = df_trn.iloc[:,(df_trn.shape[1]-1)].copy() # last column
+# X_trn = df_trn.iloc[:,0:(df_trn.shape[1]-1)].copy() #
 
-DF_columns = df_trn.columns
+# DF_columns = df_trn.columns
 
-PD_Data_tranformation = pd.DataFrame(columns=["Dtype","Remove","To_Bin","BinSize","Get_Dummies"], index=DF_columns)
+PD_Data_tranformation = pd.DataFrame(columns=["Dtype","Remove","To_Bin","BinSize","Get_Dummies"])
 
 PD_Data_tranformation.loc["ack_A"] =                                   ["NA",False,False,False,False]
 PD_Data_tranformation.loc["ack_B"] =                                   ["NA",False,False,False,False]
@@ -65,13 +65,13 @@ PD_Data_tranformation.loc["ssl_count_server_compression"] =            ["NA",Fal
 # print(PD_Data_tranformation)
 
 
-def DataImport_and_preProdceesing(DF,PD_Data_tranformation):
+def DataImport_and_preProdceesing(DF):
     # print('the value counts of the target are:')
     # print(df_trn.iloc[:, -1].value_counts())
 
     # print(DF.shape)  # dimensions (rows, columns)
     # display(DF.head())  # overview of first (last) rows
-    display(DF.describe().T)  # basic stats per variable
+    # display(DF.describe().T)  # basic stats per variable
 
     # DF = Preprocess.PreRemvoe_Low_STD(DF)
 
@@ -113,7 +113,7 @@ def DataImport_and_preProdceesing(DF,PD_Data_tranformation):
     return DF,tupl_lists
 
 
-def Test_Data_Train(Test_DF,Tuple_lists,X_train):
+def Test_Data_Train(Test_DF,Tuple_lists):
     (droped_cols, cols_to_dummies, skewed_kurt_features,Dummies_list,Dummies_dict) = Tuple_lists
 
     skewed_kurt_features=list(skewed_kurt_features)
@@ -127,16 +127,17 @@ def Test_Data_Train(Test_DF,Tuple_lists,X_train):
 
 
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X_trn, y_trn, test_size=0.33, random_state=42)
+# X_train, X_test, y_train, y_test = train_test_split(
+#     X_trn, y_trn, test_size=0.33, random_state=42)
 
-X_train_origial = X_train.copy()
+# X_train_origial = X_train.copy()
 
-X_train , tuple1 = DataImport_and_preProdceesing(X_train , PD_Data_tranformation)
-X_test  =      Test_Data_Train(X_test,tuple1,X_train_origial)
+# X_train , tuple1 = DataImport_and_preProdceesing(X_train , PD_Data_tranformation)
+# X_test  =      Test_Data_Train(X_test,tuple1,X_train_origial)
 
-Print_DF_to_file(X_train)
-Print_DF_to_file(X_test)
+# Print_DF_to_file(X_train)
+# Print_DF_to_file(X_test)
+
 
 # # print (df_trn.dtypes)
 # x = df_trn.columns.to_series().groupby(df_trn.dtypes).groups

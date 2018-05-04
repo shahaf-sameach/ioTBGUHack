@@ -9,9 +9,9 @@ class Network(object):
 
   def __init__(self):
     model = Sequential()
-    model.add(Dense(100, input_dim=297, activation='relu',))
+    model.add(Dense(100, input_dim=297, activation='tanh',))
     model.add(Dropout(0.2))
-    model.add(Dense(30, activation='relu'))
+    model.add(Dense(30, activation='tanh'))
     model.add(Dense(10, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
